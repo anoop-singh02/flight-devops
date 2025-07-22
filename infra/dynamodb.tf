@@ -1,6 +1,6 @@
 resource "aws_dynamodb_table" "flight_status" {
   name         = "flight_status"
-  billing_mode = "PAY_PER_REQUEST"   # on-demand (free-tier friendly)
+  billing_mode = "PAY_PER_REQUEST"   
 
   hash_key  = "FlightId"   # Partition Key
   range_key = "Timestamp"  # Sort Key
@@ -12,6 +12,6 @@ resource "aws_dynamodb_table" "flight_status" {
 
   attribute {
     name = "Timestamp"
-    type = "S"             # ISO date-time stored as string
+    type = "S"             
   }
 }
