@@ -6,3 +6,7 @@
 ## 2025-07-23
 - CI/CD: First OIDC pipeline run (empty Terraform plan).
 
+
+## 2025‑07‑23
+- Added DynamoDB table `flight_status` (Terraform).
+
