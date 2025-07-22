@@ -10,3 +10,7 @@
 ## 2025‑07‑23
 - Added DynamoDB table `flight_status` (Terraform).
 
+
+## 2025‑07‑23
+- Added Lambda poller stub + IAM role (Terraform).
+
