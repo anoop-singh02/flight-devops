@@ -1,6 +1,3 @@
-########################################
-#  IAM role & inline policy
-########################################
 resource "aws_iam_role" "poller_role" {
   name = "flight_poller_lambda_role"
 
@@ -21,26 +18,18 @@ resource "aws_iam_role_policy" "poller_policy" {
   policy = jsonencode({
     Version = "2012-10-17",
     Statement = [
-      # allow writes to our table
       { Effect = "Allow", Action = ["dynamodb:PutItem"], Resource = aws_dynamodb_table.flight_status.arn },
-      # allow Lambda to create log streams
       { Effect = "Allow", Action = ["logs:*"], Resource = "arn:aws:logs:*:*:*" }
     ]
   })
 }
 
-########################################
-#  Package the Python code
-########################################
 data "archive_file" "poller_zip" {
   type        = "zip"
   source_dir  = "${path.module}/../src/poller"
   output_path = "${path.module}/poller.zip"
 }
 
-########################################
-#  Lambda function
-########################################
 resource "aws_lambda_function" "poller" {
   function_name = "flight_status_poller"
   role          = aws_iam_role.poller_role.arn
