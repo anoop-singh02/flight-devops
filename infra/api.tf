@@ -36,7 +36,7 @@ resource "aws_iam_role_policy" "api_policy" {
   role = aws_iam_role.api_role.id
 
   policy = jsonencode({
-    Version   = "2012-10-17"
+    Version = "2012-10-17"
     Statement = [
       {
         Effect   = "Allow"
@@ -80,7 +80,7 @@ resource "aws_apigatewayv2_api" "http" {
 
   # --- CORS so the static site can fetch the API ----------------------------
   cors_configuration {
-    allow_origins = ["*"]       # replace with your S3 website URL to lock down
+    allow_origins = ["*"] # replace with your S3 website URL to lock down
     allow_methods = ["GET"]
     allow_headers = ["*"]
     max_age       = 3600
@@ -122,4 +122,20 @@ resource "aws_lambda_permission" "allow_apigw" {
 ########################################
 output "api_base_url" {
   value = aws_apigatewayv2_stage.prod.invoke_url
+}
+
+########################################
+#  POST /subscribe
+########################################
+resource "aws_apigatewayv2_integration" "subscribe" {
+  api_id                 = aws_apigatewayv2_api.http.id
+  integration_type       = "AWS_PROXY"
+  integration_uri        = aws_lambda_function.subscribe.invoke_arn
+  payload_format_version = "2.0"
+}
+
+resource "aws_apigatewayv2_route" "subscribe" {
+  api_id    = aws_apigatewayv2_api.http.id
+  route_key = "POST /subscribe"
+  target    = "integrations/${aws_apigatewayv2_integration.subscribe.id}"
 }

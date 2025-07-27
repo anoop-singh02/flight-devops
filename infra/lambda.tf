@@ -65,6 +65,6 @@ resource "aws_lambda_function" "poller" {
   environment {
     variables = {
       TABLE_NAME = aws_dynamodb_table.flight_status.name
-    }
+    TOPIC_ARN = aws_sns_topic.alerts.arn }
   }
 }
