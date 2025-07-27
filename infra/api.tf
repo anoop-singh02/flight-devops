@@ -36,10 +36,18 @@ resource "aws_iam_role_policy" "api_policy" {
   role = aws_iam_role.api_role.id
 
   policy = jsonencode({
-    Version = "2012-10-17",
+    Version   = "2012-10-17"
     Statement = [
-      { Effect = "Allow", Action = ["dynamodb:Scan"], Resource = aws_dynamodb_table.flight_status.arn },
-      { Effect = "Allow", Action = ["logs:*"], Resource = "arn:aws:logs:*:*:*" }
+      {
+        Effect   = "Allow"
+        Action   = ["dynamodb:Scan"]
+        Resource = aws_dynamodb_table.flight_status.arn
+      },
+      {
+        Effect   = "Allow"
+        Action   = ["logs:*"]
+        Resource = "arn:aws:logs:*:*:*"
+      }
     ]
   })
 }
@@ -64,11 +72,19 @@ resource "aws_lambda_function" "api" {
 }
 
 ########################################
-#  HTTP API Gateway v2
+#  HTTP API Gateway v2  (+ CORS)
 ########################################
 resource "aws_apigatewayv2_api" "http" {
   name          = "flight_http_api"
   protocol_type = "HTTP"
+
+  # --- CORS so the static site can fetch the API ----------------------------
+  cors_configuration {
+    allow_origins = ["*"]       # replace with your S3 website URL to lock down
+    allow_methods = ["GET"]
+    allow_headers = ["*"]
+    max_age       = 3600
+  }
 }
 
 resource "aws_apigatewayv2_integration" "lambda" {
@@ -85,14 +101,14 @@ resource "aws_apigatewayv2_route" "default" {
   target    = "integrations/${aws_apigatewayv2_integration.lambda.id}"
 }
 
-# auto‑deploy (one stage, no custom domain)
+# auto‑deploy (single default stage, no custom domain)
 resource "aws_apigatewayv2_stage" "prod" {
   api_id      = aws_apigatewayv2_api.http.id
   name        = "$default"
   auto_deploy = true
 }
 
-# allow API Gateway to call Lambda
+# allow API Gateway to invoke Lambda
 resource "aws_lambda_permission" "allow_apigw" {
   statement_id  = "AllowAPIGatewayInvoke"
   action        = "lambda:InvokeFunction"
