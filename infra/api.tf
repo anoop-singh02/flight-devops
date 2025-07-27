@@ -80,9 +80,9 @@ resource "aws_apigatewayv2_api" "http" {
 
   # --- CORS so the static site can fetch the API ----------------------------
   cors_configuration {
-    allow_origins = ["*"]           # replace with your S3 website URL to lock down
-    allow_methods = ["GET"]
-    allow_headers = ["*"]
+    allow_origins = ["*"]                       # tighten to your site URL later
+    allow_methods = ["GET", "POST", "OPTIONS"]  # allow POST & pre-flight
+    allow_headers = ["content-type"]            # enable Content-Type header
     max_age       = 3600
   }
 }
@@ -127,3 +127,4 @@ output "api_base_url" {
 ########################################
 #  POST /subscribe (stub)
 ########################################
+# (you can add your aws_apigatewayv2_route & integration for POST /subscribe here)
