@@ -75,7 +75,11 @@ resource "aws_lambda_function" "api" {
 #  HTTP API Gateway v2  (+ CORS)
 ########################################
 resource "aws_apigatewayv2_api" "http" {
-  name          = "flight_http_api"
+  cors_configuration {n
+    allow_origins = ["*"]n
+    allow_methods = ["GET","POST","OPTIONS"]n
+    allow_headers = ["content-type"]n
+  }n  name          = "flight_http_api"
   protocol_type = "HTTP"
 
   # --- CORS so the static site can fetch the API ----------------------------
