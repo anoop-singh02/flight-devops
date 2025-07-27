@@ -9,8 +9,14 @@ resource "aws_dynamodb_table" "subscriptions" {
   hash_key     = "FlightId"
   range_key    = "Email"
 
-  attribute { name = "FlightId" type = "S" }
-  attribute { name = "Email"    type = "S" }
+  attribute {
+    name = "FlightId"
+    type = "S"
+  }
+  attribute {
+    name = "Email"
+    type = "S"
+  }
 }
 
 # SNS topic – every status‑change message is published here
@@ -31,14 +37,14 @@ resource "aws_iam_role" "subscribe_role" {
 }
 
 resource "aws_iam_role_policy" "subscribe_policy" {
-  name   = "flight_subscribe_permissions"
-  role   = aws_iam_role.subscribe_role.id
+  name = "flight_subscribe_permissions"
+  role = aws_iam_role.subscribe_role.id
 
   policy = jsonencode({
     Version = "2012-10-17",
     Statement = [
-      { Effect = "Allow", Action = ["dynamodb:PutItem"],     Resource = aws_dynamodb_table.subscriptions.arn },
-      { Effect = "Allow", Action = ["sns:Subscribe"],        Resource = aws_sns_topic.alerts.arn }
+      { Effect = "Allow", Action = ["dynamodb:PutItem"], Resource = aws_dynamodb_table.subscriptions.arn },
+      { Effect = "Allow", Action = ["sns:Subscribe"], Resource = aws_sns_topic.alerts.arn }
     ]
   })
 }
@@ -55,7 +61,7 @@ resource "aws_lambda_function" "subscribe" {
     variables = {
       TABLE_NAME   = aws_dynamodb_table.subscriptions.name
       TOPIC_ARN    = aws_sns_topic.alerts.arn
-      ALLOWED_ORIG = "*"                       # CORS pre‑flight handled below
+      ALLOWED_ORIG = "*" # CORS pre‑flight handled below
     }
   }
 }
