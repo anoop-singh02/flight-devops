@@ -8,10 +8,10 @@ data "archive_file" "api_zip" {
 }
 
 ########################################
-#  Lambda
+#  IAM for reader Lambda
 ########################################
 resource "aws_iam_role" "api_role" {
-  name = "flight_api_lambda_role"
+  name               = "flight_api_lambda_role"
   assume_role_policy = data.aws_iam_policy_document.lambda_trust.json
 }
 
@@ -22,12 +22,15 @@ resource "aws_iam_role_policy" "api_policy" {
   policy = jsonencode({
     Version = "2012-10-17",
     Statement = [
-      { Effect = "Allow", Action = [ "dynamodb:Scan" ], Resource = aws_dynamodb_table.flight_status.arn },
-      { Effect = "Allow", Action = [ "logs:*" ],        Resource = "arn:aws:logs:*:*:*" }
+      { Effect = "Allow", Action = ["dynamodb:Scan"], Resource = aws_dynamodb_table.flight_status.arn },
+      { Effect = "Allow", Action = ["logs:*"], Resource = "arn:aws:logs:*:*:*" }
     ]
   })
 }
 
+########################################
+#  Reader Lambda
+########################################
 resource "aws_lambda_function" "api" {
   function_name    = "flight_status_api"
   role             = aws_iam_role.api_role.arn
@@ -52,9 +55,9 @@ resource "aws_apigatewayv2_api" "http" {
 }
 
 resource "aws_apigatewayv2_integration" "lambda" {
-  api_id           = aws_apigatewayv2_api.http.id
-  integration_type = "AWS_PROXY"
-  integration_uri  = aws_lambda_function.api.invoke_arn
+  api_id                 = aws_apigatewayv2_api.http.id
+  integration_type       = "AWS_PROXY"
+  integration_uri        = aws_lambda_function.api.invoke_arn
   payload_format_version = "2.0"
 }
 
