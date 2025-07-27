@@ -39,7 +39,7 @@ resource "aws_iam_role_policy" "api_policy" {
     Version = "2012-10-17",
     Statement = [
       { Effect = "Allow", Action = ["dynamodb:Scan"], Resource = aws_dynamodb_table.flight_status.arn },
-      { Effect = "Allow", Action = ["logs:*"],         Resource = "arn:aws:logs:*:*:*" }
+      { Effect = "Allow", Action = ["logs:*"], Resource = "arn:aws:logs:*:*:*" }
     ]
   })
 }
@@ -48,10 +48,10 @@ resource "aws_iam_role_policy" "api_policy" {
 #  Reader Lambda
 ########################################
 resource "aws_lambda_function" "api" {
-  function_name    = "flight_status_api"
-  role             = aws_iam_role.api_role.arn
-  runtime          = "python3.11"
-  handler          = "handler.handler"
+  function_name = "flight_status_api"
+  role          = aws_iam_role.api_role.arn
+  runtime       = "python3.11"
+  handler       = "handler.handler"
 
   filename         = data.archive_file.api_zip.output_path
   source_code_hash = data.archive_file.api_zip.output_base64sha256
