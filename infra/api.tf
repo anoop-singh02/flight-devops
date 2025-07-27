@@ -8,6 +8,22 @@ data "archive_file" "api_zip" {
 }
 
 ########################################
+#  IAM trust policy for all Lambdas
+########################################
+data "aws_iam_policy_document" "lambda_trust" {
+  statement {
+    effect = "Allow"
+
+    principals {
+      type        = "Service"
+      identifiers = ["lambda.amazonaws.com"]
+    }
+
+    actions = ["sts:AssumeRole"]
+  }
+}
+
+########################################
 #  IAM for reader Lambda
 ########################################
 resource "aws_iam_role" "api_role" {
@@ -23,7 +39,7 @@ resource "aws_iam_role_policy" "api_policy" {
     Version = "2012-10-17",
     Statement = [
       { Effect = "Allow", Action = ["dynamodb:Scan"], Resource = aws_dynamodb_table.flight_status.arn },
-      { Effect = "Allow", Action = ["logs:*"], Resource = "arn:aws:logs:*:*:*" }
+      { Effect = "Allow", Action = ["logs:*"],         Resource = "arn:aws:logs:*:*:*" }
     ]
   })
 }
@@ -36,6 +52,7 @@ resource "aws_lambda_function" "api" {
   role             = aws_iam_role.api_role.arn
   runtime          = "python3.11"
   handler          = "handler.handler"
+
   filename         = data.archive_file.api_zip.output_path
   source_code_hash = data.archive_file.api_zip.output_base64sha256
 
