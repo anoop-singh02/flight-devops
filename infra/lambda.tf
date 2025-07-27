@@ -26,7 +26,7 @@ resource "aws_iam_role_policy" "poller_policy" {
     Statement = [
       {
         Effect   = "Allow"
-        Action   = [ "dynamodb:PutItem" ]
+        Action   = ["dynamodb:PutItem"]
         Resource = aws_dynamodb_table.flight_status.arn
       },
       {
