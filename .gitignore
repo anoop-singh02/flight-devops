@@ -205,3 +205,9 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# Terraform working dirs
+**/.terraform/
+**/.terraform.lock.hcl
+# local zips / build artefacts
+infra/*.zip
