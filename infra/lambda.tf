@@ -15,7 +15,7 @@ resource "aws_iam_role" "poller_role" {
 }
 
 ########################################
-#  Inline policy – DynamoDB write + logs
+#  Inline policy – DynamoDB + logs
 ########################################
 resource "aws_iam_role_policy" "poller_policy" {
   name = "flight_poller_permissions"
@@ -30,8 +30,8 @@ resource "aws_iam_role_policy" "poller_policy" {
         Resource = aws_dynamodb_table.flight_status.arn
       },
       {
-        Effect   = "Allow"
-        Action   = [
+        Effect = "Allow"
+        Action = [
           "logs:CreateLogStream",
           "logs:PutLogEvents"
         ]
