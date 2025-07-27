@@ -75,16 +75,12 @@ resource "aws_lambda_function" "api" {
 #  HTTP API Gateway v2  (+ CORS)
 ########################################
 resource "aws_apigatewayv2_api" "http" {
-  cors_configuration {n
-    allow_origins = ["*"]n
-    allow_methods = ["GET","POST","OPTIONS"]n
-    allow_headers = ["content-type"]n
-  }n  name          = "flight_http_api"
+  name          = "flight_http_api"
   protocol_type = "HTTP"
 
   # --- CORS so the static site can fetch the API ----------------------------
   cors_configuration {
-    allow_origins = ["*"] # replace with your S3 website URL to lock down
+    allow_origins = ["*"]           # replace with your S3 website URL to lock down
     allow_methods = ["GET"]
     allow_headers = ["*"]
     max_age       = 3600
@@ -129,11 +125,5 @@ output "api_base_url" {
 }
 
 ########################################
-#  POST /subscribe
+#  POST /subscribe (stub)
 ########################################
-
-
-########################################
-#  POST /subscribe
-########################################
-
