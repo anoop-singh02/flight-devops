@@ -127,31 +127,9 @@ output "api_base_url" {
 ########################################
 #  POST /subscribe
 ########################################
-resource "aws_apigatewayv2_integration" "subscribe" {
-  api_id                 = aws_apigatewayv2_api.http.id
-  integration_type       = "AWS_PROXY"
-  integration_uri        = aws_lambda_function.subscribe.invoke_arn
-  payload_format_version = "2.0"
-}
 
-resource "aws_apigatewayv2_route" "subscribe" {
-  api_id    = aws_apigatewayv2_api.http.id
-  route_key = "POST /subscribe"
-  target    = "integrations/${aws_apigatewayv2_integration.subscribe.id}"
-}
 
 ########################################
 #  POST /subscribe
 ########################################
-resource "aws_apigatewayv2_integration" "subscribe" {
-  api_id                 = aws_apigatewayv2_api.http.id
-  integration_type       = "AWS_PROXY"
-  integration_uri        = aws_lambda_function.subscribe.invoke_arn
-  payload_format_version = "2.0"
-}
 
-resource "aws_apigatewayv2_route" "subscribe" {
-  api_id    = aws_apigatewayv2_api.http.id
-  route_key = "POST /subscribe"
-  target    = "integrations/${aws_apigatewayv2_integration.subscribe.id}"
-}
